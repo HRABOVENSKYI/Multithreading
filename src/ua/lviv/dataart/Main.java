@@ -1,101 +1,59 @@
 package ua.lviv.dataart;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 public class Main {
-    public static final int MAX_PASSWORD = 9999;
 
-    public static void main(String[] args) {
-        Random random = new Random();
-        Vault vault = new Vault(random.nextInt(MAX_PASSWORD));
-        List<Thread> threads = new ArrayList<>();
-        threads.add(new AscendingHackerThread(vault));
-        threads.add(new DescendingHackerThread(vault));
-        threads.add(new PoliceThread());
+    public static void main(String[] args) throws InterruptedException {
+        List<Long> inputNumbers = Arrays.asList(10000000l, 3445l, 234l, 3455l, 2243l, 23l, 459l);
+        List<FactorialThread> threads = new ArrayList<>();
+        inputNumbers.forEach(inputNumber -> threads.add(new FactorialThread(inputNumber)));
         threads.forEach(Thread::start);
-    }
-
-    private static class Vault {
-        private int password;
-
-        public Vault(int password) {
-            this.password = password;
+        for (Thread thread : threads) {
+            thread.join(2000);
         }
-
-        public boolean isCorrectPassword(int guess) {
-            try {
-                Thread.sleep(5);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        for (int i = 0; i < inputNumbers.size(); i++) {
+            FactorialThread factorialThread = threads.get(i);
+            if (factorialThread.isFinished()) {
+                System.out.println("Factorial of " + inputNumbers.get(i) + " is " + factorialThread.getResult());
+            } else {
+                System.out.println("The calculation for " + inputNumbers.get(i) + " is still in progress");
             }
-            return this.password == guess;
         }
     }
 
-    private abstract static class HackerThread extends Thread {
-        protected Vault vault;
+    public static class FactorialThread extends Thread {
+        private long inputNumber;
+        private BigInteger result = BigInteger.ZERO;
+        private boolean isFinished = false;
 
-        public HackerThread(Vault vault) {
-            this.vault = vault;
-            this.setName(this.getClass().getName());
-            this.setPriority(Thread.MAX_PRIORITY);
-        }
-
-        @Override
-        public synchronized void start() {
-            System.out.println("Starting thread " + this.getName());
-            super.start();
-        }
-    }
-
-    private static class AscendingHackerThread extends HackerThread {
-        public AscendingHackerThread(Vault vault) {
-            super(vault);
+        public FactorialThread(long inputNumber) {
+            this.inputNumber = inputNumber;
         }
 
         @Override
         public void run() {
-            for (int guess = 0; guess < MAX_PASSWORD; guess++) {
-                if (vault.isCorrectPassword(guess)) {
-                    System.out.println(this.getName() + " guessed the password " + guess);
-                    System.exit(0);
-                }
-            }
-        }
-    }
-
-    private static class DescendingHackerThread extends HackerThread {
-        public DescendingHackerThread(Vault vault) {
-            super(vault);
+            this.result = factorial(inputNumber);
+            this.isFinished = true;
         }
 
-        @Override
-        public void run() {
-            for (int guess = MAX_PASSWORD; guess >= 0; guess--) {
-                if (vault.isCorrectPassword(guess)) {
-                    System.out.println(this.getName() + " guessed the password " + guess);
-                    System.exit(0);
-                }
+        public BigInteger factorial(long n) {
+            BigInteger tempResult = BigInteger.ONE;
+            for (long i = n; i > 0; i--) {
+                tempResult = tempResult.multiply(new BigInteger(Long.toString(i)));
             }
+            return tempResult;
         }
-    }
 
-    private static class PoliceThread extends Thread {
-        @Override
-        public void run() {
-            for (int i = 10; i > 0; i--) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                System.out.println(i);
-            }
+        public boolean isFinished() {
+            return isFinished;
+        }
 
-            System.out.println("Game over for you, hackers");
-            System.exit(0);
+        public BigInteger getResult() {
+            return result;
         }
     }
 }
