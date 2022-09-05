@@ -48,9 +48,7 @@ public class App {
         }
 
         public int getCount() {
-            synchronized (this) {
-                return count;
-            }
+            return count;
         }
     }
 
