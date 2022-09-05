@@ -35,15 +35,15 @@ public class App {
             return counter;
         }
 
-        public void decrement() {
+        public synchronized void decrement() {
             this.count--;
         }
 
-        public void increment() {
+        public synchronized void increment() {
             this.count++;
         }
 
-        public int getCount() {
+        public synchronized int getCount() {
             return count;
         }
     }
