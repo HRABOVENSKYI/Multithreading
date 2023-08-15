@@ -8,7 +8,7 @@ import java.util.List;
 public class Main {
     private static final int MAX_PASSWORD = 9999;
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         Vault vault = new Vault(1064);
         List<Thread> threads = new ArrayList<>();
         threads.add(new AscendingHackerThread(vault));
