@@ -26,7 +26,7 @@ public class Main {
     }
 
     public static class FactorialThread extends Thread {
-        private long inputNumber;
+        private final long inputNumber;
         private BigInteger result = BigInteger.ZERO;
         private boolean isFinished = false;
 
