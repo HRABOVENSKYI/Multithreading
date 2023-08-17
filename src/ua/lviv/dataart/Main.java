@@ -16,13 +16,13 @@ public class Main {
             t.setDaemon(true);
             t.start();
         });
-        threads.forEach(t -> {
-            try {
+        try {
+            for (FactorialThread t : threads) {
                 t.join(2000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
             }
-        });
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         threads.forEach(t -> {
             if (t.isFinished) {
                 System.out.println("Thread is finished and the result is: " + t.result);
