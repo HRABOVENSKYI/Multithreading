@@ -142,8 +142,5 @@ public class MyMain {
         }
 
         stack.printOperationsCounter();
-
-        // TODO: compare the performances of both implementations in the multithreaded env
-        //  Check the correctness of the implementation
     }
 }
