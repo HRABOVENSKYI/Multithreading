@@ -6,13 +6,20 @@ import java.util.concurrent.Executors;
 public class Main implements Runnable {
     int counter = 1;
 
+//    public static void main(String[] args) {
+//        Main main = new Main();
+//        Executor executor = Executors.newFixedThreadPool(10);
+//        for (int i = 0; i < 10; i++) {
+//            executor.execute(main);
+//        }
+//    }
+
     public static void main(String[] args) {
         Main main = new Main();
-        Executor executor = Executors.newFixedThreadPool(10);
         for (int i = 0; i < 10; i++) {
-            executor.execute(main);
+            Thread t = new Thread(main);
+            t.start();
         }
-
     }
 
     @Override
